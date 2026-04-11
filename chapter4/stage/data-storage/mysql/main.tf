@@ -1,0 +1,26 @@
+terraform {
+  backend "s3" {
+    bucket = "terraform-up-and-running-state-for-ono-personal"
+    key    = "stage/data-stores/mysql/terraform.tfstate"
+    region = "ap-northeast-1"
+    # dynamodb_table = "terraform-up-and-running-locks"
+    encrypt = true
+  }
+}
+
+provider "aws" {
+  region = "ap-northeast-1"
+}
+
+resource "aws_db_instance" "example" {
+  identifier_prefix = "terraform-up-and-running"
+  engine            = "mysql"
+  allocated_storage = 10
+  instance_class    = "db.t3.micro"
+  db_name           = var.db_name
+  multi_az          = false
+
+  username            = var.db_username
+  password            = var.db_password
+  skip_final_snapshot = true
+}
